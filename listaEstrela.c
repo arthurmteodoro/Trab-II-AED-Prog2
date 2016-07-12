@@ -82,14 +82,12 @@ int vaziaListaEstrela(ListaEstrela l)
 /* VERIFICA SE EXISTE NA LISTA                                                                    */
 /* IN : PONTEIRO PARA LISTA, IDENTIFICADOR                                OUT : PONTEIRO PARA NODO*/
 /*================================================================================================*/
-NodoEstrela existeListaEstrela(ListaEstrela l, NodoAresta nodo)
 {
 	if(!vaziaListaEstrela(l))
 	{
 		NodoEstrela aux;
 		for(aux = l->inicio; aux != NULL; aux = aux->prox)
 		{
-			if(aux->aresta == nodo)
 			{
 				return aux;
 			}
@@ -106,9 +104,17 @@ void retiraListaEstrela(ListaEstrela l, NodoAresta nodo)
 {
 	if(!vaziaListaEstrela(l))
 	{
-		NodoEstrela aux = existeListaEstrela(l,nodo);
 		if(aux != NULL)
 		{
+			/*Caso for o unico elemento*/
+			if(l->tam == 1)
+			{
+				free(aux);
+				l->inicio = NULL;
+				l->fim = NULL;
+				l->tam--;
+				return;
+			}
 			/*Caso for no inicio*/
 			if(aux->ant == NULL)
 			{
@@ -154,8 +160,6 @@ void destroiListaEstrela(ListaEstrela l)
 {
 	while(!vaziaListaEstrela(l))
 	{
-		NodoAresta aresta = l->inicio->aresta;
-		retiraListaEstrela(l,aresta);
 	}
 }
 
@@ -173,6 +177,24 @@ NodoAresta nodoListaEstrela(ListaEstrela l, int pos)
 			pos--;
 		}
 		return aux->aresta;
+	}
+	return NULL;
+}
+
+/*================================================================================================*/
+/* RETORNA NODO POS                                                                               */
+/* IN : POS, LISTAESTRELA                                                        OUT : NODOESTRELA*/
+/*================================================================================================*/
+NodoEstrela posListaEstrela(ListaEstrela l, int pos)
+{
+	if(!vaziaListaEstrela(l))
+	{
+		NodoEstrela aux;
+		for(aux = l->inicio; pos != 1; aux = aux->prox)
+		{
+			pos--;
+		}
+		return aux;
 	}
 	return NULL;
 }

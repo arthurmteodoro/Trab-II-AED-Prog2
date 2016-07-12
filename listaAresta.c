@@ -113,6 +113,23 @@ void retiraListaAresta(ListaAresta l, int identificador)
 		NodoAresta aux = existeListaAresta(l,identificador);
 		if(aux != NULL)
 		{
+			/*Caso for o unico elemento*/
+			if(l->tam == 1)
+			{
+				free(aux);
+				l->inicio = NULL;
+				l->fim = NULL;
+				l->tam--;
+				return;
+			}
+			if(l->tam == 1)
+			{
+				free(aux);
+				l->inicio = NULL;
+				l->fim = NULL;
+				l->tam--;
+				return;
+			}
 			/*Caso for no inicio*/
 			if(aux->ant == NULL)
 			{
@@ -158,7 +175,6 @@ void destroiListaAresta(ListaAresta l)
 {
 	while(!vaziaListaAresta(l))
 	{
-		int identificador = l->inicio->identificador;
 		retiraListaAresta(l,identificador);
 	}
 }
@@ -177,6 +193,7 @@ int idListaAresta(NodoAresta aresta)
 /* IN : IDARESTA, LISTAARESTA                                                    OUT : NODOCHEGADA*/
 /*================================================================================================*/
 NodoVertice idChegadaListaVertice(ListaAresta l, int idAresta)
+NodoVertice idChegadaListaAresta(ListaAresta l, int idAresta)
 {
 	if(!vaziaListaAresta(l))
 	{
@@ -194,6 +211,7 @@ NodoVertice idChegadaListaVertice(ListaAresta l, int idAresta)
 /* IN : IDARESTA, LISTAARESTA                                                    OUT : NODOCHEGADA*/
 /*================================================================================================*/
 NodoVertice idPartidaListaVertice(ListaAresta l, int idAresta)
+NodoVertice idPartidaListaAresta(ListaAresta l, int idAresta)
 {
 	if(!vaziaListaAresta(l))
 	{
@@ -202,6 +220,24 @@ NodoVertice idPartidaListaVertice(ListaAresta l, int idAresta)
 		{
 			return aux->partida;
 		}
+	}
+	return NULL;
+}
+
+/*================================================================================================*/
+/* RETORNA NODO POS                                                                               */
+/* IN : POS, LISTAARESTA                                                          OUT : NODOARESTA*/
+/*================================================================================================*/
+NodoAresta posListaAresta(ListaAresta l, int pos)
+{
+	if(!vaziaListaAresta(l))
+	{
+		NodoAresta aux;
+		for(aux = l->inicio; pos != 1; aux = aux->prox)
+		{
+			pos--;
+		}
+		return aux;
 	}
 	return NULL;
 }

@@ -78,6 +78,7 @@ void insereListaVertice(ListaVertice l, int identificador)
 int vaziaListaVertice(ListaVertice l)
 {
 	return(l->tam == 0);
+	return(l->inicio == NULL);
 }
 
 /*================================================================================================*/
@@ -111,9 +112,20 @@ void retiraListaVertice(ListaVertice l, int identificador)
 		NodoVertice aux = existeListaVertice(l,identificador);
 		if(aux != NULL)
 		{
+			/*Caso for o unico elemento*/
+			if(l->tam == 1)
+			{
+				destroiListaEstrela(aux->estrela);
+				free(aux);
+				l->inicio = NULL;
+				l->fim = NULL;
+				l->tam--;
+				return;
+			}
 			/*Caso for no inicio*/
 			if(aux->ant == NULL)
 			{
+				destroiListaEstrela(aux->estrela);
 				aux->prox->ant = NULL;
 				l->inicio = aux->prox;
 				free(aux);
@@ -123,6 +135,7 @@ void retiraListaVertice(ListaVertice l, int identificador)
 			/*Caso for no fim*/
 			if(aux->prox == NULL)
 			{
+				destroiListaEstrela(aux->estrela);
 				aux->ant->prox = NULL;
 				l->fim = aux;
 				free(aux);
@@ -130,12 +143,13 @@ void retiraListaVertice(ListaVertice l, int identificador)
 				return;
 			}
 			/*Retirar do meio*/
+			destroiListaEstrela(aux->estrela);
 			aux->ant->prox = aux->prox;
 			aux->prox->ant = aux->ant;
 			free(aux);
 			l->tam--;
 			return;
-		}
+		}	
 	}	
 }
 
@@ -154,11 +168,14 @@ int tamanhoListaVertice(ListaVertice l)
 /*================================================================================================*/
 void destroiListaVertice(ListaVertice l)
 {
+	int identificador;
 	while(!vaziaListaVertice(l))
 	{
 		int identificador = l->inicio->identificador;
+		identificador = l->inicio->identificador;
 		retiraListaVertice(l,identificador);
 	}
+	free(l);
 }
 
 /*================================================================================================*/
@@ -183,6 +200,24 @@ ListaEstrela idEstrelaListaVertice(ListaVertice l, int idVertice)
 		{
 			return aux->estrela;
 		}
+	}
+	return NULL;
+}
+
+/*================================================================================================*/
+/* RETORNA NODO POS                                                                               */
+/* IN : POS, LISTAVERTICE                                                        OUT : NODOVERTICE*/
+/*================================================================================================*/
+NodoVertice posListaVertice(ListaVertice l, int pos)
+{
+	if(!vaziaListaVertice(l))
+	{
+		NodoVertice aux;
+		for(aux = l->inicio; pos != 1; aux = aux->prox)
+		{
+			pos--;
+		}
+		return aux;
 	}
 	return NULL;
 }

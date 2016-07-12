@@ -28,6 +28,7 @@ extern int tamanhoListaVertice(ListaVertice l);
 extern void destroiListaVertice(ListaVertice l);
 extern int idListaVertice(NodoVertice vertice);
 extern ListaEstrela idEstrelaListaVertice(ListaVertice l, int idVertice);
+extern NodoVertice posListaVertice(ListaVertice l, int pos);
 
 /*================================================================================================*/
 /*                                        LISTA ARESTA                                            */
@@ -36,12 +37,16 @@ extern ListaAresta criaListaAresta(void);
 extern void insereListaAresta(ListaAresta l, NodoVertice partida, NodoVertice chegada, int identificador);
 extern int vaziaListaAresta(ListaAresta l);
 extern NodoVertice existeListaVertice(ListaVertice l, int identificador);
+extern NodoAresta existeListaAresta(ListaAresta l, int identificador);
 extern void retiraListaAresta(ListaAresta l, int identificador);
 extern int tamanhoListaAresta(ListaAresta l);
 extern void destroiListaAresta(ListaAresta l);
 extern int idListaAresta(NodoAresta aresta);
 extern NodoVertice idChegadaListaVertice(ListaAresta l, int idAresta);
 extern NodoVertice idPartidaListaVertice(ListaAresta l, int idAresta);
+extern NodoVertice idChegadaListaAresta(ListaAresta l, int idAresta);
+extern NodoVertice idPartidaListaAresta(ListaAresta l, int idAresta);
+extern NodoAresta posListaAresta(ListaAresta l, int pos);
 
 /*================================================================================================*/
 /*                                        LISTA ESTRELA                                           */
@@ -50,10 +55,10 @@ extern ListaEstrela criaListaEstrela(void);
 extern void insereListaEstrela(ListaEstrela l, NodoAresta aresta);
 extern int vaziaListaEstrela(ListaEstrela l);
 extern NodoEstrela existeListaEstrela(ListaEstrela l, NodoAresta nodo);
-extern void retiraListaEstrela(ListaEstrela l, NodoAresta nodo);
 extern int tamanhoListaEstrela(ListaEstrela l);	
 extern void destroiListaEstrela(ListaEstrela l);
 extern NodoAresta nodoListaEstrela(ListaEstrela l, int pos);
+extern NodoEstrela posListaEstrela(ListaEstrela l, int pos);
 
 
 #endif
