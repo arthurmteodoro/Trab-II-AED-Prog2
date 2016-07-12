@@ -173,8 +173,10 @@ int tamanhoListaAresta(ListaAresta l)
 /*================================================================================================*/
 void destroiListaAresta(ListaAresta l)
 {
+	int identificador;
 	while(!vaziaListaAresta(l))
 	{
+		identificador = l->inicio->identificador;
 		retiraListaAresta(l,identificador);
 	}
 }
@@ -192,7 +194,6 @@ int idListaAresta(NodoAresta aresta)
 /* RETORNA NODO ARESTA DE CHEGADA                                                                 */
 /* IN : IDARESTA, LISTAARESTA                                                    OUT : NODOCHEGADA*/
 /*================================================================================================*/
-NodoVertice idChegadaListaVertice(ListaAresta l, int idAresta)
 NodoVertice idChegadaListaAresta(ListaAresta l, int idAresta)
 {
 	if(!vaziaListaAresta(l))
@@ -210,7 +211,6 @@ NodoVertice idChegadaListaAresta(ListaAresta l, int idAresta)
 /* RETORNA NODO ARESTA DE PARTIDA                                                                 */
 /* IN : IDARESTA, LISTAARESTA                                                    OUT : NODOCHEGADA*/
 /*================================================================================================*/
-NodoVertice idPartidaListaVertice(ListaAresta l, int idAresta)
 NodoVertice idPartidaListaAresta(ListaAresta l, int idAresta)
 {
 	if(!vaziaListaAresta(l))

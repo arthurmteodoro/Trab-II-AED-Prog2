@@ -82,6 +82,7 @@ int vaziaListaEstrela(ListaEstrela l)
 /* VERIFICA SE EXISTE NA LISTA                                                                    */
 /* IN : PONTEIRO PARA LISTA, IDENTIFICADOR                                OUT : PONTEIRO PARA NODO*/
 /*================================================================================================*/
+NodoEstrela existeListaEstrela(ListaEstrela l, NodoAresta nodo)
 {
 	if(!vaziaListaEstrela(l))
 	{
@@ -102,6 +103,7 @@ int vaziaListaEstrela(ListaEstrela l)
 /*================================================================================================*/
 void retiraListaEstrela(ListaEstrela l, NodoAresta nodo)
 {
+	NodoEstrela aux = existeListaEstrela(l,nodo);
 	if(!vaziaListaEstrela(l))
 	{
 		if(aux != NULL)
@@ -158,8 +160,11 @@ int tamanhoListaEstrela(ListaEstrela l)
 /*================================================================================================*/
 void destroiListaEstrela(ListaEstrela l)
 {
+	NodoAresta aresta;
 	while(!vaziaListaEstrela(l))
 	{
+		aresta = nodoListaEstrela(l,1);
+		retiraListaEstrela(l,aresta); 
 	}
 }
 

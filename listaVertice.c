@@ -171,7 +171,6 @@ void destroiListaVertice(ListaVertice l)
 	int identificador;
 	while(!vaziaListaVertice(l))
 	{
-		int identificador = l->inicio->identificador;
 		identificador = l->inicio->identificador;
 		retiraListaVertice(l,identificador);
 	}
