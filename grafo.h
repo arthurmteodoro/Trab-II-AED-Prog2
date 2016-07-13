@@ -34,5 +34,9 @@ extern int GInumeroVerticesMax(Grafo p);
 extern int GInumeroArestas(Grafo p);
 extern int GInumeroArestasMax(Grafo p);
 extern Grafo GGcarregaGrafo(char *file);
+extern int GBsalvaGrafo(Grafo p, char *file);
+extern int GIpegaGrau(Grafo p, int v);
+extern int GAprimaAresta(Grafo p, int v);
+extern int GAproxAresta(Grafo p, int v, int a);
 
 #endif

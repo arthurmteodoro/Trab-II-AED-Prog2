@@ -2,7 +2,7 @@
 /*              Trabalho II de Programação II e Algoritmos e Estruturas de Dados I                */
 /*                Nome : Arthur Alexsander Martins Teodo      Matrícula : 0022427                 */
 /*                Nome : Saulo Ricardo Dias Fernandes         Matrícula : 0021581                 */
-/*                                         Data: 10/07/1016                                       */
+/*                                         Data: 10/07/2016                                       */
 /*================================================================================================*/
 
 /*================================================================================================*/
@@ -81,8 +81,8 @@ int GAcriaAresta(Grafo p, int v1, int v2)
 	if((GBexisteIdVertice(p,v1))&&(GBexisteIdVertice(p,v2)))
 	{
 		insereListaAresta(p->Arestas,existeListaVertice(p->Vertices,v1),existeListaVertice(p->Vertices,v2),p->sementeArestas);
-		insereListaEstrela(idEstrelaListaVertice(p->Vertices,v1),existeListaAresta(p->Arestas,v1));
-		insereListaEstrela(idEstrelaListaVertice(p->Vertices,v2),existeListaAresta(p->Arestas,v2));
+		insereListaEstrela(idEstrelaListaVertice(p->Vertices,v1),existeListaAresta(p->Arestas,p->sementeArestas));
+		insereListaEstrela(idEstrelaListaVertice(p->Vertices,v2),existeListaAresta(p->Arestas,p->sementeArestas));
 		p->numArestas++;
 		p->sementeArestas++;
 		return p->sementeArestas-1;
@@ -97,7 +97,15 @@ int GAcriaAresta(Grafo p, int v1, int v2)
 /*======================================================================================*/
 int GVdestroiVertice(Grafo p, int v)
 {
-	return 1;
+	NodoAresta aux;
+	ListaEstrela estrela = idEstrelaListaVertice(p->Vertices,v);
+	while(!vaziaListaEstrela(estrela))
+	{
+		aux = nodoListaEstrela(estrela,1);
+		GAdestroiAresta(p,idListaAresta(aux));
+	}
+	retiraListaVertice(p->Vertices,v);
+	return 0;
 }
 
 /*======================================================================================*/
@@ -109,11 +117,15 @@ int GAdestroiAresta(Grafo p, int a)
 {
 	if(GBexisteIdAresta(p,a))
 	{
-		//NodoAresta aresta = existeListaAresta(p->Arestas,a);
-		//NodoVertice partida = idPartidaListaAresta(p->Arestas,a);
-		//NodoVertice chegada = idChegadaListaAresta(p->Arestas,a);
-		//ListaEstrela estrelaPartida = idEstrelaListaVertice(p->Vertices,idListaVertice(partida));
-		//ListaEstrela estrelaChegada = idEstrelaListaVertice(p->Vertices,idListaVertice(chegada));
+		NodoVertice partida = idPartidaListaAresta(p->Arestas,a);
+		NodoVertice chegada = idChegadaListaAresta(p->Arestas,a);
+		ListaEstrela alfa = idEstrelaListaVertice(p->Vertices,idListaVertice(partida));
+		ListaEstrela omega = idEstrelaListaVertice(p->Vertices,idListaVertice(chegada));
+		NodoAresta aux = existeListaAresta(p->Arestas,a);
+		retiraListaEstrela(alfa,aux);
+		retiraListaEstrela(omega,aux);
+		retiraListaAresta(p->Arestas,a);
+		return 0;
 	}
 	return 1;
 }
@@ -374,4 +386,57 @@ Grafo GGcarregaGrafo(char *file)
 		//GVcriaVertice(g,id)
 	}*/
 	return NULL;
+}
+
+/*======================================================================================*/
+/* SALVA GRAFO                                                                          */
+/* IN = P, F(NOME DO ARQUIVO)                                                           */
+/* OUT = B                                                                              */
+/*======================================================================================*/
+int GBsalvaGrafo(Grafo p, char *file)
+{
+	return 1;
+}
+
+/*======================================================================================*/
+/* PEGA GRAU                                                                            */
+/* IN = P, V                                                                            */
+/* OUT = I (GRAU DO VERTICE)                                                            */
+/*======================================================================================*/
+int GIpegaGrau(Grafo p, int v)
+{
+	ListaEstrela estrela = idEstrelaListaVertice(p->Vertices, v);
+	return tamanhoListaEstrela(estrela);
+}
+
+/*======================================================================================*/
+/* PEGA A PRIMEIRA ARESTA                                                               */
+/* IN = P, V                                                                            */
+/* OUT = A1 (PRIMEIRA ARESTA)                                                           */
+/*======================================================================================*/
+int GAprimaAresta(Grafo p, int v)
+{
+	ListaEstrela estrela = idEstrelaListaVertice(p->Vertices, v);
+	return idListaAresta(nodoListaEstrela(estrela, 1));
+}
+
+/*======================================================================================*/
+/* PEGA A PROXIMA ARESTA                                                                */
+/* IN = P, V, A1                                                                        */
+/* OUT = A2 (PROXIMA ARESTA)                                                            */
+/*======================================================================================*/
+int GAproxAresta(Grafo p, int v, int a)
+{
+	int i;
+	ListaEstrela estrela = idEstrelaListaVertice(p->Vertices, v);
+	NodoAresta aux;
+	for(i = 1; i <= tamanhoListaEstrela(estrela); i++)
+	{
+		aux = nodoListaEstrela(estrela,i);
+		if(a > idListaAresta(aux))
+		{
+			return idListaAresta(aux);
+		}
+	}
+	return 0;
 }

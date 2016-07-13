@@ -52,10 +52,10 @@ extern ListaEstrela criaListaEstrela(void);
 extern void insereListaEstrela(ListaEstrela l, NodoAresta aresta);
 extern int vaziaListaEstrela(ListaEstrela l);
 extern NodoEstrela existeListaEstrela(ListaEstrela l, NodoAresta nodo);
+extern void retiraListaEstrela(ListaEstrela l, NodoAresta nodo);
 extern int tamanhoListaEstrela(ListaEstrela l);	
 extern void destroiListaEstrela(ListaEstrela l);
 extern NodoAresta nodoListaEstrela(ListaEstrela l, int pos);
 extern NodoEstrela posListaEstrela(ListaEstrela l, int pos);
-
 
 #endif

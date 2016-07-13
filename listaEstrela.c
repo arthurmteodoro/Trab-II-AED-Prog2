@@ -9,6 +9,7 @@
 /*                                      BIBLIOTECAS                                               */
 /*================================================================================================*/
 #include <stdlib.h>
+#include <stdio.h>
 #include "listas.h"
 
 struct nodoEstrela
@@ -75,7 +76,7 @@ void insereListaEstrela(ListaEstrela l, NodoAresta aresta)
 /*================================================================================================*/
 int vaziaListaEstrela(ListaEstrela l)
 {
-	return(l->tam == 0);
+	return(l->inicio == NULL);
 }
 
 /*================================================================================================*/
@@ -106,9 +107,7 @@ void retiraListaEstrela(ListaEstrela l, NodoAresta nodo)
 	NodoEstrela aux = existeListaEstrela(l,nodo);
 	if(!vaziaListaEstrela(l))
 	{
-		if(aux != NULL)
-		{
-			/*Caso for o unico elemento*/
+		/*Caso for o unico elemento*/
 			if(l->tam == 1)
 			{
 				free(aux);
@@ -117,6 +116,8 @@ void retiraListaEstrela(ListaEstrela l, NodoAresta nodo)
 				l->tam--;
 				return;
 			}
+		if(aux != NULL)
+		{
 			/*Caso for no inicio*/
 			if(aux->ant == NULL)
 			{
