@@ -38,5 +38,13 @@ extern int GBsalvaGrafo(Grafo p, char *file);
 extern int GIpegaGrau(Grafo p, int v);
 extern int GAprimaAresta(Grafo p, int v);
 extern int GAproxAresta(Grafo p, int v, int a);
+extern int GAprimaEntrada(Grafo p, int v);
+extern int GAproxEntrada(Grafo p, int v, int a1);
+extern int GAprimaSaida(Grafo p, int v);
+extern int GAproxSaida(Grafo p, int v, int a1);
+extern int GBarestaLaco(Grafo p, int a);
+extern int GValfa(Grafo p, int a);
+extern int GVomega(Grafo p, int a);
+extern int GVvizinho(Grafo p, int a, int v1);
 
 #endif

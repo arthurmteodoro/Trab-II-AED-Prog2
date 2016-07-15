@@ -14,6 +14,7 @@
 struct nodoVertice
 {
 	int identificador;
+	int grau;
 	ListaEstrela estrela;
 	struct nodoVertice *prox;
 	struct nodoVertice *ant;
@@ -219,4 +220,22 @@ NodoVertice posListaVertice(ListaVertice l, int pos)
 		return aux;
 	}
 	return NULL;
+}
+
+/*================================================================================================*/
+/* INCREMENTA GRAU                                                                                */
+/* IN : NODOVERTICE, QUANT                                                              OUT : VOID*/
+/*================================================================================================*/
+void incrementaGrau(NodoVertice vertice, int quant)
+{
+	vertice->grau = vertice->grau + quant;
+}
+
+/*================================================================================================*/
+/* CONSULTA GRAU                                                                                  */
+/* IN : NODOVERTICE                                                                     OUT : GRAU*/
+/*================================================================================================*/
+int consultaGrau(NodoVertice vertice)
+{
+	return vertice->grau;
 }

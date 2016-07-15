@@ -29,6 +29,8 @@ extern void destroiListaVertice(ListaVertice l);
 extern int idListaVertice(NodoVertice vertice);
 extern ListaEstrela idEstrelaListaVertice(ListaVertice l, int idVertice);
 extern NodoVertice posListaVertice(ListaVertice l, int pos);
+extern void incrementaGrau(NodoVertice vertice, int quant);
+extern int consultaGrau(NodoVertice vertice);
 
 /*================================================================================================*/
 /*                                        LISTA ARESTA                                            */
