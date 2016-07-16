@@ -9,6 +9,7 @@
 /*                                      BIBLIOTECAS                                               */
 /*================================================================================================*/
 #include <stdlib.h>
+#include <stdio.h>
 #include "listas.h"
 
 struct nodoAresta
@@ -114,15 +115,7 @@ void retiraListaAresta(ListaAresta l, int identificador)
 		if(aux != NULL)
 		{
 			/*Caso for o unico elemento*/
-			if(l->tam == 1)
-			{
-				free(aux);
-				l->inicio = NULL;
-				l->fim = NULL;
-				l->tam--;
-				return;
-			}
-			if(l->tam == 1)
+			if(l->inicio->prox == NULL)
 			{
 				free(aux);
 				l->inicio = NULL;
@@ -143,9 +136,9 @@ void retiraListaAresta(ListaAresta l, int identificador)
 			if(aux->prox == NULL)
 			{
 				aux->ant->prox = NULL;
-				l->fim = aux;
+				l->fim = aux->ant;
 				free(aux);
-				l->tam--;
+				l->tam--;			
 				return;
 			}
 			/*Retirar do meio*/

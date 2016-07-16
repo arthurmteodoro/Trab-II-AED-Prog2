@@ -36,8 +36,8 @@ Grafo GGcriaGrafo(void)
 	Grafo aux = (Grafo) malloc(sizeof(struct grafo));
 	aux->numVertices = 0;
 	aux->numArestas = 0;
-	aux->sementeArestas = 1;
-	aux->sementeVertices = 1;
+	aux->sementeArestas = 0;
+	aux->sementeVertices = 0;
 	aux->Vertices = criaListaVertice();
 	aux->Arestas = criaListaAresta();
 	return aux;
@@ -64,10 +64,10 @@ Grafo GGdestroiGrafo(Grafo p)
 /*======================================================================================*/
 int GVcriaVertice(Grafo p)
 {
-	insereListaVertice(p->Vertices,p->sementeVertices);
+	insereListaVertice(p->Vertices,p->sementeVertices+1);
 	p->sementeVertices++;
 	p->numVertices++;
-	return p->sementeVertices-1;
+	return p->sementeVertices;
 }
 
 /*======================================================================================*/
@@ -78,28 +78,27 @@ int GVcriaVertice(Grafo p)
 
 int GAcriaAresta(Grafo p, int v1, int v2)
 {
-	if((GBexisteIdVertice(p,v1))&&(GBexisteIdVertice(p,v2)))
+	if((GBexisteIdVertice(p,v1))&&(GBexisteIdVertice(p,v2)))		
 	{
 		NodoVertice partida = existeListaVertice(p->Vertices,v1);
 		NodoVertice chegada = existeListaVertice(p->Vertices,v2);
 		if(v1 == v2)
 		{
-			printf("EH UM LAÇO\n");
+			p->numArestas++;
+			p->sementeArestas++;
 			incrementaGrau(partida,2);
 			insereListaAresta(p->Arestas,existeListaVertice(p->Vertices,v1),existeListaVertice(p->Vertices,v2),p->sementeArestas);
 			insereListaEstrela(idEstrelaListaVertice(p->Vertices,v1),existeListaAresta(p->Arestas,p->sementeArestas));
-			p->numArestas++;
-			p->sementeArestas++;
-			return p->sementeArestas-1;
+			return p->sementeArestas;
 		}
+		p->numArestas++;
+		p->sementeArestas++;
 		incrementaGrau(chegada,1);
 		incrementaGrau(partida,1);
 		insereListaAresta(p->Arestas,existeListaVertice(p->Vertices,v1),existeListaVertice(p->Vertices,v2),p->sementeArestas);
 		insereListaEstrela(idEstrelaListaVertice(p->Vertices,v1),existeListaAresta(p->Arestas,p->sementeArestas));
 		insereListaEstrela(idEstrelaListaVertice(p->Vertices,v2),existeListaAresta(p->Arestas,p->sementeArestas));
-		p->numArestas++;
-		p->sementeArestas++;
-		return p->sementeArestas-1;
+		return p->sementeArestas;
 	}
 	return 0;
 }
@@ -396,35 +395,39 @@ int GInumeroArestasMax(Grafo p)
 /* OUT = PONTEIRO PARA GRAFO                                                            */
 /*======================================================================================*/
 Grafo GGcarregaGrafo(char *file)
-{
-
- 	/*FILE *Arq = fopen(file,"rt");
-	Grafo g = criaGrafo();
-	int i,id, partida, chegada, arestas, vertices, seedArestas, seedVertices;
-	fscanf("%d %d",&vertices, &arestas);
-	fscanf("%d %d",&seedVertices, &seedArestas);
-	while(i < seedVertices)
+{	
+	FILE *entrada = fopen(file,"rt");
+	Grafo grafo = GGcriaGrafo();
+	int vertices, arestas, idVertice, seedVertice, seedAresta, contVertices = 1, contArestas = 1;
+	int omega, alfa, idAresta, arestaCriada, verticeCriado,i;
+	fscanf(entrada,"%d %d", &vertices, &arestas);
+	fscanf(entrada,"%d %d", &seedVertice, &seedAresta);
+	for(i = 1; i <= vertices; i++)
 	{
-		fscanf("%d", &id);
-		if(id != i)
+		fscanf(entrada,"%d",&idVertice);
+		while(contVertices != idVertice)
 		{
-			while(id != i)
-			{
-				GVcriaVertice(g);
-				GVdestroiVertice(g,i);
-				i++;						
-			}
+			verticeCriado = GVcriaVertice(grafo);
+			GVdestroiVertice(grafo,verticeCriado);
+			contVertices++;
 		}
-		GVcriaVertice(g);
-		i++;
+		verticeCriado = GVcriaVertice(grafo);
+		contVertices++;
 	}
-	for(i=1; i<=seedArestas; i++)
+	for(i = 1; i <= arestas; i++)
 	{
-		fscanf("%d %d", &partida, &chegada);
-		GAcriaAresta(g, partida, chegada);
-	}*/
-	
-	return NULL;
+		fscanf(entrada,"%d %d %d",&idAresta, &alfa, &omega);
+		while(contArestas != idAresta)
+		{
+			arestaCriada = GAcriaAresta(grafo,verticeCriado,verticeCriado);
+			GAdestroiAresta(grafo,arestaCriada);
+			contArestas++;
+		}
+		arestaCriada = GAcriaAresta(grafo,alfa,omega);
+		contArestas++;
+	}
+	fclose(entrada);
+	return grafo;
 }
 
 /*======================================================================================*/
@@ -434,6 +437,19 @@ Grafo GGcarregaGrafo(char *file)
 /*======================================================================================*/
 int GBsalvaGrafo(Grafo p, char *file)
 {
+	FILE *saida = fopen(file,"wt");
+	int i;
+	fprintf(saida, "%d %d\n", GInumeroVertices(p), GInumeroArestas(p));
+	fprintf(saida, "%d %d\n", p->sementeVertices, p->sementeArestas);
+	for(i = GVprimeiroVertice(p); i != 0; i = GVproximoVertice(p,i))
+	{
+		fprintf(saida, "%d\n", i);
+	}
+	for(i = GAprimeiraAresta(p); i != 0; i = GAproximaAresta(p,i))
+	{
+		fprintf(saida, "%d %d %d\n", i, GValfa(p,i), GVomega(p,i));
+	}
+	fclose(saida);
 	return 1;
 }
 
