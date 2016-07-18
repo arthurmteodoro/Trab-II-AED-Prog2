@@ -4,7 +4,7 @@
 
 int main(void)
 {
-	Grafo g = GGcarregaGrafo("saida1.txt");
+	Grafo g = GGcarregaGrafo("entrada1.txt");
 	int a;
 	for(a = GVprimeiroVertice(g); a != 0; a = GVproximoVertice(g,a))
 	{
@@ -15,10 +15,11 @@ int main(void)
 	{
 		printf("%d = %d -> %d\n", a,GValfa(g,a), GVomega(g,a));
 	}
-	GVdestroiVertice(g,1);
-	GBsalvaGrafo(g,"saida2.txt");
-	GGdestroiGrafo(g);
-	g = GGcarregaGrafo("saida2.txt");
+	printf("========================================================\n");
+	GVdestroiVertice(g,5);
+	int novoVertice1 = GVcriaVertice(g);
+	int novoVertice2 = GVcriaVertice(g);
+	GAcriaAresta(g,novoVertice1,novoVertice2);
 	for(a = GVprimeiroVertice(g); a != 0; a = GVproximoVertice(g,a))
 	{
 		printf("%d - ", a);

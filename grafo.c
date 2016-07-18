@@ -427,6 +427,8 @@ Grafo GGcarregaGrafo(char *file)
 		contArestas++;
 	}
 	fclose(entrada);
+	grafo->sementeArestas = seedAresta;
+	grafo->sementeVertices = seedVertice;
 	return grafo;
 }
 

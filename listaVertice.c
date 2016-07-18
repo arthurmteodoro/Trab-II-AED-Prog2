@@ -138,7 +138,7 @@ void retiraListaVertice(ListaVertice l, int identificador)
 			{
 				destroiListaEstrela(aux->estrela);
 				aux->ant->prox = NULL;
-				l->fim = aux;
+				l->fim = aux->ant;
 				free(aux);
 				l->tam--;
 				return;

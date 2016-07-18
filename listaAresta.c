@@ -115,7 +115,7 @@ void retiraListaAresta(ListaAresta l, int identificador)
 		if(aux != NULL)
 		{
 			/*Caso for o unico elemento*/
-			if(l->inicio->prox == NULL)
+			if(l->tam == 1)
 			{
 				free(aux);
 				l->inicio = NULL;

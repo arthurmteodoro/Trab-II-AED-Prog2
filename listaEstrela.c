@@ -131,7 +131,7 @@ void retiraListaEstrela(ListaEstrela l, NodoAresta nodo)
 			if(aux->prox == NULL)
 			{
 				aux->ant->prox = NULL;
-				l->fim = aux;
+				l->fim = aux->ant;
 				free(aux);
 				l->tam--;
 				return;
