@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "grafo.h"
+#include "algoritmos.h"
 
 int main(void)
 {
 	Grafo g = GGcarregaGrafo("entrada1.txt");
-	int a;
+	/*int a;
 	for(a = GVprimeiroVertice(g); a != 0; a = GVproximoVertice(g,a))
 	{
 		printf("%d - ", a);
@@ -28,7 +29,13 @@ int main(void)
 	for(a = GAprimeiraAresta(g); a != 0; a = GAproximaAresta(g,a))
 	{
 		printf("%d = %d -> %d\n", a,GValfa(g,a), GVomega(g,a));
-	}
+	}*/
+	//
+	#if defined LARGURA	
+		buscaLargura(g,1);
+	#else
+		buscaProfundidade(g,1);	
+	#endif		
 	GGdestroiGrafo(g);
 	return 0;
 }

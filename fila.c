@@ -56,7 +56,7 @@ void insereFila(Fila f, int valor)
 	NodoFila aux = (NodoFila) malloc(sizeof(struct nodoFila));
 	aux->valor = valor;
 	/*Caso a fila esteva vazia*/
-	if(vaziaFila(f))
+	if(f->tam == 0)
 	{
 		f->entrada = aux;
 		f->saida = aux;
@@ -66,6 +66,7 @@ void insereFila(Fila f, int valor)
 		return;
 	}
 	aux->prox = f->entrada;
+	f->entrada->ant = aux;
 	aux->ant = NULL;
 	f->entrada = aux;
 	f->tam++;
@@ -106,7 +107,7 @@ int retiraFila(Fila f)
 /*======================================================================================*/
 int vaziaFila(Fila f)
 {
-	return (f->tam == 1);
+	return (f->tam == 0);
 }
 
 /*======================================================================================*/
@@ -116,13 +117,11 @@ int vaziaFila(Fila f)
 /*======================================================================================*/
 void destroiFila(Fila f)
 {
-	if(f != NULL)
+	if(!vaziaFila(f))
 	{
 		while(!vaziaFila(f))
 		{
 			retiraFila(f);
 		}
-		free(f);
-		f = NULL;
 	}
 }
