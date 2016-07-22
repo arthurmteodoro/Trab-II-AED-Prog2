@@ -130,16 +130,24 @@ int GAdestroiAresta(Grafo p, int a)
 {
 	if(GBexisteIdAresta(p,a))
 	{
-		NodoVertice partida = idPartidaListaAresta(p->Arestas,a);
-		NodoVertice chegada = idChegadaListaAresta(p->Arestas,a);
-		ListaEstrela alfa = idEstrelaListaVertice(p->Vertices,idListaVertice(partida));
-		ListaEstrela omega = idEstrelaListaVertice(p->Vertices,idListaVertice(chegada));
-		NodoAresta aux = existeListaAresta(p->Arestas,a);
-		retiraListaEstrela(alfa,aux);
-		retiraListaEstrela(omega,aux);
+		int partida = GValfa(p,a);
+		int chegada = GVomega(p,a);
+		NodoAresta retirarAresta = existeListaAresta(p->Arestas,a);
+		if(partida == chegada)
+		{
+			ListaEstrela retirarEstrela = idEstrelaListaVertice(p->Vertices,partida);
+			retiraListaEstrela(retirarEstrela, retirarAresta);
+			retiraListaAresta(p->Arestas,a);
+			incrementaGrau(existeListaVertice(p->Vertices,partida),-1);
+			return 0;
+		}
+		ListaEstrela retirarAlfa = idEstrelaListaVertice(p->Vertices, partida);
+		ListaEstrela retirarOmega = idEstrelaListaVertice(p->Vertices, chegada);
+		retiraListaEstrela(retirarAlfa, retirarAresta);
+		retiraListaEstrela(retirarOmega, retirarAresta);
 		retiraListaAresta(p->Arestas,a);
-		incrementaGrau(partida,-1);
-		incrementaGrau(chegada,-1);
+		incrementaGrau(existeListaVertice(p->Vertices,partida), -1);
+		incrementaGrau(existeListaVertice(p->Vertices,chegada), -1);
 		return 0;
 	}
 	return 1;
@@ -398,33 +406,21 @@ Grafo GGcarregaGrafo(char *file)
 {	
 	FILE *entrada = fopen(file,"rt");
 	Grafo grafo = GGcriaGrafo();
-	int vertices, arestas, idVertice, seedVertice, seedAresta, contVertices = 1, contArestas = 1;
-	int omega, alfa, idAresta, arestaCriada, verticeCriado,i;
+	int vertices, arestas, idVertice, seedVertice, seedAresta;
+	int omega, alfa, idAresta,i;
 	fscanf(entrada,"%d %d", &vertices, &arestas);
 	fscanf(entrada,"%d %d", &seedVertice, &seedAresta);
 	for(i = 1; i <= vertices; i++)
 	{
 		fscanf(entrada,"%d",&idVertice);
-		while(contVertices != idVertice)
-		{
-			verticeCriado = GVcriaVertice(grafo);
-			GVdestroiVertice(grafo,verticeCriado);
-			contVertices++;
-		}
-		verticeCriado = GVcriaVertice(grafo);
-		contVertices++;
+		grafo->sementeVertices = idVertice-1;	
+	  GVcriaVertice(grafo);
 	}
 	for(i = 1; i <= arestas; i++)
 	{
 		fscanf(entrada,"%d %d %d",&idAresta, &alfa, &omega);
-		while(contArestas != idAresta)
-		{
-			arestaCriada = GAcriaAresta(grafo,verticeCriado,verticeCriado);
-			GAdestroiAresta(grafo,arestaCriada);
-			contArestas++;
-		}
-		arestaCriada = GAcriaAresta(grafo,alfa,omega);
-		contArestas++;
+		grafo->sementeArestas = idAresta-1;	
+		GAcriaAresta(grafo,alfa,omega);
 	}
 	fclose(entrada);
 	grafo->sementeArestas = seedAresta;

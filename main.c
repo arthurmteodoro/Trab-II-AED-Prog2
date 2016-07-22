@@ -5,37 +5,16 @@
 
 int main(void)
 {
-	Grafo g = GGcarregaGrafo("entrada1.txt");
-	/*int a;
-	for(a = GVprimeiroVertice(g); a != 0; a = GVproximoVertice(g,a))
+	Grafo g = GGcarregaGrafo("grafo7.txt");
+
+	coloracaoGulosa(g,6);
+	/*int vertice, aresta;
+	vertice = 2;
+	for(aresta = GAprimaAresta(g,vertice); aresta != 0; aresta = GAproxAresta(g,vertice,aresta))
 	{
-		printf("%d - ", a);
-	}
-	printf("\n");
-	for(a = GAprimeiraAresta(g); a != 0; a = GAproximaAresta(g,a))
-	{
-		printf("%d = %d -> %d\n", a,GValfa(g,a), GVomega(g,a));
-	}
-	printf("========================================================\n");
-	GVdestroiVertice(g,5);
-	int novoVertice1 = GVcriaVertice(g);
-	int novoVertice2 = GVcriaVertice(g);
-	GAcriaAresta(g,novoVertice1,novoVertice2);
-	for(a = GVprimeiroVertice(g); a != 0; a = GVproximoVertice(g,a))
-	{
-		printf("%d - ", a);
-	}
-	printf("\n");
-	for(a = GAprimeiraAresta(g); a != 0; a = GAproximaAresta(g,a))
-	{
-		printf("%d = %d -> %d\n", a,GValfa(g,a), GVomega(g,a));
+		printf("Aresta = %d Vizinho = %d\n", aresta, GVvizinho(g,aresta,vertice));
 	}*/
-	//
-	#if defined LARGURA	
-		buscaLargura(g,1);
-	#else
-		buscaProfundidade(g,1);	
-	#endif		
+
 	GGdestroiGrafo(g);
 	return 0;
 }

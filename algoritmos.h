@@ -9,5 +9,6 @@
 
 extern void buscaLargura(Grafo g, int partida);
 extern void buscaProfundidade(Grafo g, int partida);
+extern void coloracaoGulosa(Grafo g, int k);
 
 #endif

@@ -90,6 +90,7 @@ NodoEstrela existeListaEstrela(ListaEstrela l, NodoAresta nodo)
 		NodoEstrela aux;
 		for(aux = l->inicio; aux != NULL; aux = aux->prox)
 		{
+			if(nodo == aux->aresta)
 			{
 				return aux;
 			}
