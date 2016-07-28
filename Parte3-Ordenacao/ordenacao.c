@@ -25,10 +25,15 @@ typedef struct medida *medidas;
 void preencheVetor (unsigned long int *v, int t);
 void copiaVetor (unsigned long int *c, unsigned long int *v, int t);
 int ordenadoCorretamente (unsigned long int *v, int t);
-int realizaVerificacao(unsigned long int *v, int i, int j, long int *verificacoes);
+int realizaVerificacao(unsigned long int i, unsigned long int j, long int *verificacoes);
 void realizaTrocas(unsigned long int *v, int i, int j, long int *trocas);
 void ordenacaoBolha(unsigned long int *v, int tam, medidas m);
 void ordenacaoInsercao(unsigned long int *v, int tam, medidas m);
+void Particao(unsigned long int *v, int esq, int dir, int *I, int *J, long int *troca, long int *comp);
+void ordenacaoQuicksort(unsigned long int *v, int esq, int dir, long int *comp, long int *troca);
+int pegaMediana(int esq, int dir);
+void ordenacaoQuicksortTurbinado(unsigned long int *v, int esq, int dir, long int *comp, long int *troca);
+void insercaoTurbinado(unsigned long int *v, int inicio, int fim, long int *trocas, long int*comps);
 
 /*================================================================================================*/
 /*                                         FUNÇÃO MAIN                                             */
@@ -41,11 +46,14 @@ int main(int argc, char const *argv[])
 	double tempo_medio=0.0, comparacoes_medias=0.0, trocas_medias=0.0;
 	int exec, execucoes, tam, metodo;
 	medidas m;
+	long int troca = 0, comp = 0;
+	double tempo, inicio, fim;
 
 	/*Usa valores de entrada para configurar metodo de ordenacao, tamanho e quantidade de execucoes*/
 	if(argc < 4)
 	{
 		printf("ERRO - Usar ./ordenacao <metodo> <tam> <execucoes>\n");
+		return 1;
 	}
 	else
 	{
@@ -83,11 +91,29 @@ int main(int argc, char const *argv[])
 		}
 		if(metodo == 3)
 		{
+			srand(time(NULL));
 			printf("Ordenando com quicksort por mediana de tres sorteios\n");
+			inicio = (double)clock()/CLOCKS_PER_SEC;
+			ordenacaoQuicksort(copia,0,tam-1,&comp,&troca);
+			fim = (double)clock()/CLOCKS_PER_SEC;
+
+			tempo = fim - inicio;
+			m->tempo = tempo;
+			m->comparacoes = comp;
+			m->trocas = troca;
 		}
 		if(metodo == 4)
 		{
 			printf("Ordenando com quicksort turbinado\n");
+			srand(time(NULL));
+			inicio = (double)clock()/CLOCKS_PER_SEC;
+			ordenacaoQuicksortTurbinado(copia,0,tam-1,&comp,&troca);
+			fim = (double)clock()/CLOCKS_PER_SEC;
+
+			tempo = fim - inicio;
+			m->tempo = tempo;
+			m->comparacoes = comp;
+			m->trocas = troca;
 		}
 	
 		printf ("Verificando se o vetor foi ordenado corretamente\n");
@@ -195,10 +221,10 @@ int ordenadoCorretamente (unsigned long int *v, int t)
 /* IN = VETOR, INDICE I, INDICE J, QUANTIDADE DE VERIFICACOES                           */
 /* OUT = VOID                                                                           */
 /*======================================================================================*/
-int realizaVerificacao(unsigned long int *v, int i, int j, long int *verificacoes)
+int realizaVerificacao(unsigned long int i, unsigned long int j, long int *verificacoes)
 {
 	*verificacoes = *verificacoes + 1;
-	if(v[i] > v[j])
+	if(i > j)
 	{
 		return 1;
 	}
@@ -239,7 +265,7 @@ void ordenacaoBolha(unsigned long int *v, int tam, medidas m)
 	{
 		for (j = 0; j < i; j++)
 		{
-			if(realizaVerificacao(v,j,j+1,&comp))
+			if(realizaVerificacao(v[j],v[j+1],&comp))
 			{
 				realizaTrocas(v,j,j+1,&troca);
 			}
@@ -269,7 +295,7 @@ void ordenacaoInsercao(unsigned long int *v, int tam, medidas m)
 	for(i = 1; i < tam; i++)
 	{
 		j = i;
-		while(j > 0 && realizaVerificacao(v,j-1,j,&comp))
+		while(j > 0 && realizaVerificacao(v[j-1],v[j],&comp))
 		{
 			realizaTrocas(v,j-1,j,&troca);
 			j--;
@@ -282,4 +308,131 @@ void ordenacaoInsercao(unsigned long int *v, int tam, medidas m)
 	m->tempo = elapsed;
 	m->comparacoes = comp;
 	m->trocas = troca;
+}
+
+/*======================================================================================*/
+/* PARTICAO DO QUICKSORT                                                                */
+/* IN = VETOR, ESQ, DIR, &I, &J, ED                                                     */
+/* OUT = VOID                                                                           */
+/*======================================================================================*/
+void Particao(unsigned long int *v, int esq, int dir, int *I, int *J, long int *troca, long int *comp)
+{
+	int i, j, pivo;
+	long int Troca = *troca, Comp = *comp;
+
+	i = esq;
+	j = dir;
+
+	pivo = v[pegaMediana(esq,dir)];
+
+	do
+	{
+		while(realizaVerificacao(pivo,v[i],&Comp))
+			i++;
+		while(realizaVerificacao(v[j],pivo,&Comp))
+			j--;
+		if(i <= j)
+		{
+			realizaTrocas(v,j,i,&Troca);
+			i++;
+			j--;
+		}
+	}while(i <= j);	
+
+	*I = i;
+	*J = j;
+	*troca = Troca;
+	*comp = Comp;
+}
+
+/*======================================================================================*/
+/* ORDENA POR QUICKSORT                                                                 */
+/* IN = VETOR, ESQ, DIR                                                                 */
+/* OUT = VOID                                                                           */
+/*======================================================================================*/
+void ordenacaoQuicksort(unsigned long int *v, int esq, int dir, long int *comp, long int *troca)
+{
+	int i, j;
+
+	Particao(v,esq,dir,&i,&j,*&troca,*&comp);
+	if(esq < j)
+		ordenacaoQuicksort(v,esq,j,*&troca,*&comp);
+	if(i < dir)
+		ordenacaoQuicksort(v,i,dir,*&troca,*&comp);
+}
+
+/*======================================================================================*/
+/* PEGA PIVO MEDIANA                                                                    */
+/* IN = ESQ, DIR                                                                        */
+/* OUT = INDICE                                                                         */
+/*======================================================================================*/
+int pegaMediana(int esq, int dir)
+{
+	int i, j, pivo;
+	unsigned long int aux;
+
+	unsigned long int *v = (unsigned long int*) malloc(sizeof(unsigned long int)*3);
+  v[0]= (esq + rand()%((dir+1)-esq));
+  v[1]= (esq + rand()%((dir+1)-esq));
+  v[2]= (esq + rand()%((dir+1)-esq));
+
+	for(i = 1; i < 3; i++)
+	{
+		j = i;
+		while(j > 0 && v[j-1] > v[j])
+		{
+			aux = v[j];
+			v[j] = v[j-1];
+			v[j-1] = aux;
+			j--;
+		}
+	}	
+
+	pivo = v[1];
+	free(v);
+	return pivo;
+}
+
+/*======================================================================================*/
+/* ORDENA POR QUICKSORT TURBINADO                                                       */
+/* IN = VETOR, ESQ, DIR                                                                 */
+/* OUT = VOID                                                                           */
+/*======================================================================================*/
+void ordenacaoQuicksortTurbinado(unsigned long int *v, int esq, int dir, long int *comp, long int *troca)
+{
+	int i, j;
+
+	if((esq+dir) <= 40)
+	{
+		insercaoTurbinado(v,esq,dir,*&troca,&*comp);
+	}
+	else
+	{
+		Particao(v,esq,dir,&i,&j,*&troca,*&comp);
+		if(esq < j)
+			ordenacaoQuicksort(v,esq,j,*&troca,*&comp);
+		if(i < dir)
+			ordenacaoQuicksort(v,i,dir,*&troca,*&comp);
+	}
+}
+
+/*======================================================================================*/
+/* ORDENACAO POR INSERCAO PARA QUICKSORT TURBINADO                                      */
+/* IN = VETOR, INICIO, FIM, TROCAS E COMPARACOES                                        */
+/* OUT = VOID                                                                           */
+/*======================================================================================*/
+void insercaoTurbinado(unsigned long int *v, int inicio, int fim, long int *trocas, long int*comps)
+{
+	int i, j;
+	long int troca = *trocas, comp = *comps;
+
+	for(i = inicio+1; i < fim; i++)
+	{
+		j = i;
+		while(j > 0 && realizaVerificacao(v[j-1],v[j],&comp))
+		{
+			realizaTrocas(v,j-1,j,&troca);
+			j--;
+		}
+	}	
 }
