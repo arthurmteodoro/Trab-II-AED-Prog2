@@ -34,139 +34,220 @@ void ordenacaoQuicksort(unsigned long int *v, int esq, int dir, long int *comp, 
 int pegaMediana(int esq, int dir);
 void ordenacaoQuicksortTurbinado(unsigned long int *v, int esq, int dir, long int *comp, long int *troca);
 void insercaoTurbinado(unsigned long int *v, int inicio, int fim, long int *trocas, long int*comps);
+void Quicksort(unsigned long int *v, int tam, medidas m);
+void QuicksortTurbinado(unsigned long int *v, int tam, medidas m);
 
 /*================================================================================================*/
 /*                                         FUNÇÃO MAIN                                             */
 /*================================================================================================*/
 int main(int argc, char const *argv[])
 {
-	/*Declaracao das variaveis*/
+	/*Declaração das variaveis*/
 	unsigned long int* vetor;
-	unsigned long int* copia;
-	double tempo_medio=0.0, comparacoes_medias=0.0, trocas_medias=0.0;
-	int exec, execucoes, tam, metodo;
-	medidas m;
-	long int troca = 0, comp = 0;
-	double tempo, inicio, fim;
+	unsigned long int* copia1;
+	unsigned long int* copia2;
+	unsigned long int* copia3;
+	unsigned long int* copia4;
+	double tempo_medio1=0.0, comparacoes_medias1=0.0, trocas_medias1=0.0;
+	double tempo_medio2=0.0, comparacoes_medias2=0.0, trocas_medias2=0.0;
+	double tempo_medio3=0.0, comparacoes_medias3=0.0, trocas_medias3=0.0;
+	double tempo_medio4=0.0, comparacoes_medias4=0.0, trocas_medias4=0.0;
+	int exec, tam;
+	medidas m1, m2, m3, m4;
 
-	/*Usa valores de entrada para configurar metodo de ordenacao, tamanho e quantidade de execucoes*/
-	if(argc < 4)
+	/*verificacao se os argumentos estao corretos*/
+	if(argc != 2)
 	{
-		printf("ERRO - Usar ./ordenacao <metodo> <tam> <execucoes>\n");
+		printf("Usar ./ordenacao <tamanho>\n");
 		return 1;
 	}
-	else
-	{
-		metodo = atoi(argv[1]);
-		tam = atoi(argv[2]);
-		execucoes = atoi(argv[3]);
-	}
+	tam = atoi(argv[1]);
 
-	/*Cria os vetores e a estrutura que armazena os dados*/
-	m = (medidas) malloc (sizeof (struct medida));
+	/*Alocacao das estruturas */
+	m1 = (medidas) malloc (sizeof (struct medida));
+	m2 = (medidas) malloc (sizeof (struct medida));
+	m3 = (medidas) malloc (sizeof (struct medida));
+	m4 = (medidas) malloc (sizeof (struct medida));
 	vetor = (unsigned long int*) malloc(tam*sizeof(unsigned long int));
-	copia = (unsigned long int*) malloc(tam*sizeof(unsigned long int));
+	copia1 = (unsigned long int*) malloc(tam*sizeof(unsigned long int));
+	copia2 = (unsigned long int*) malloc(tam*sizeof(unsigned long int));
+	copia3 = (unsigned long int*) malloc(tam*sizeof(unsigned long int));
+	copia4 = (unsigned long int*) malloc(tam*sizeof(unsigned long int));
 
-	/*Realiza as execucoes*/
-	for(exec = 1; exec <= execucoes; exec = exec + 1)
+	for(exec = 1; exec <= 3; exec++)
 	{
-		if(metodo != 5)
+		printf("INICIO DA EXECUCAO %d\n\n", exec);
+
+		/*Preenche o vetores*/
+		printf ("Preenchendo vetor aleatoriamente \n");
+		preencheVetor(vetor, tam);
+		if(!vetor)
 		{
-			printf ("EXECUCAO %d \n\n", exec);
-			
-			printf ("Preenchendo vetor aleatoriamente \n");
-			preencheVetor (vetor, tam);
-
-			printf ("Copiando vetor\n");
-			copiaVetor (copia, vetor, tam);
-
-			if(metodo == 1)
-			{
-				printf("Odenando com o método da bolha\n");
-				ordenacaoBolha(copia,tam,m);
-			}
-			if(metodo == 2)
-			{
-				printf("Odenando com o método da insercao\n");
-				ordenacaoInsercao(copia,tam,m);
-			}
-			if(metodo == 3)
-			{
-				srand(time(NULL));
-				printf("Ordenando com quicksort por mediana de tres sorteios\n");
-				inicio = (double)clock()/CLOCKS_PER_SEC;
-				ordenacaoQuicksort(copia,0,tam-1,&comp,&troca);
-				fim = (double)clock()/CLOCKS_PER_SEC;
-
-				tempo = fim - inicio;
-				m->tempo = tempo;
-				m->comparacoes = comp;
-				m->trocas = troca;
-			}
-			if(metodo == 4)
-			{
-				printf("Ordenando com quicksort turbinado\n");
-				srand(time(NULL));
-				inicio = (double)clock()/CLOCKS_PER_SEC;
-				ordenacaoQuicksortTurbinado(copia,0,tam-1,&comp,&troca);
-				fim = (double)clock()/CLOCKS_PER_SEC;
-
-				tempo = fim - inicio;
-				m->tempo = tempo;
-				m->comparacoes = comp;
-				m->trocas = troca;
-			}
-
-			printf ("Verificando se o vetor foi ordenado corretamente\n");
-			
-			if(ordenadoCorretamente(copia, tam))
-			{
-				printf ("Vetor ordenado corretamente\n");
-				tempo_medio = tempo_medio + m->tempo;
-				comparacoes_medias = comparacoes_medias + m->comparacoes;
-				trocas_medias = trocas_medias + m->trocas;
-				printf("Quantidade de trocas %.2lf\n", m->trocas);
-				printf("Tempo gasto %lf\n", m->tempo);
-				printf("Quantidade de comparacoes %.2lf\n", m->comparacoes);
-			}
-			else
-				printf("ERRO: Vetor nao ordenado\n");
-				
-			printf ("\n\n");
+			printf("ERRO - Falta de memória\n");
+			return 1;
 		}
 
-		tempo_medio = tempo_medio / (double)execucoes;
-		comparacoes_medias = comparacoes_medias / (double)execucoes;
-		trocas_medias = trocas_medias / (double)execucoes;
+		/*Copia os vetores para ordenar por vários métodos*/
+		printf("Realizando a copia dos vetores\n");
+		copiaVetor(copia1,vetor,tam);
+		if(!copia1)
+		{
+			printf("ERRO - Falta de memória\n");
+			return 1;
+		}
+		copiaVetor(copia2,vetor,tam);
+		if(!copia2)
+		{
+			printf("ERRO - Falta de memória\n");
+			return 1;
+		}
+		copiaVetor(copia3,vetor,tam);
+		if(!copia3)
+		{
+			printf("ERRO - Falta de memória\n");
+			return 1;
+		}
+		copiaVetor(copia4,vetor,tam);
+		if(!copia4)
+		{
+			printf("ERRO - Falta de memória\n");
+			return 1;
+		}
 
-		/*Mostra os resultados*/
-		printf("=======================================================================\n");
-		if(metodo == 1)
+		/*==================================Ordenacao por Bolha================================*/
+		printf("\n====== Ordenando com o método da bolha ======\n");
+		ordenacaoBolha(copia1,tam,m1);
+		if(ordenadoCorretamente(copia1, tam))
 		{
-			printf("Odenando com o método da bolha\n");
+			printf ("Vetor ordenado corretamente\n");
+			tempo_medio1 = tempo_medio1 + m1->tempo;
+			comparacoes_medias1 = comparacoes_medias1 + m1->comparacoes;
+			trocas_medias1 = trocas_medias1 + m1->trocas;
+			printf("Quantidade de trocas %.2lf\n", m1->trocas);
+			printf("Tempo gasto %lf\n", m1->tempo);
+			printf("Quantidade de comparacoes %.2lf\n", m1->comparacoes);
 		}
-		if(metodo == 2)
+		else
+			printf("ERRO: Vetor nao ordenado\n");
+		
+		/*=============================Ordenacao por Insercao===================================*/
+		printf("\n====== Ordenando com o método da insercao ======\n");
+		ordenacaoInsercao(copia2,tam,m2);
+		if(ordenadoCorretamente(copia2, tam))
 		{
-			printf("Odenando com o método da insercao\n");
+			printf ("Vetor ordenado corretamente\n");
+			tempo_medio2 = tempo_medio2 + m2->tempo;
+			comparacoes_medias2 = comparacoes_medias2 + m2->comparacoes;
+			trocas_medias2 = trocas_medias2 + m2->trocas;
+			printf("Quantidade de trocas %.2lf\n", m2->trocas);
+			printf("Tempo gasto %lf\n", m2->tempo);
+			printf("Quantidade de comparacoes %.2lf\n", m2->comparacoes);
 		}
-		if(metodo == 3)
+		else
+			printf("ERRO: Vetor nao ordenado\n");
+
+		/*===============================Ordenacao por Quicksort=================================*/
+		printf("\n====== Ordenando com quicksort por mediana de tres sorteios ======\n");
+		Quicksort(copia3,tam,m3);
+		if(ordenadoCorretamente(copia3, tam))
 		{
-			printf("Ordenando com quicksort por mediana de tres sorteios\n");
+			printf ("Vetor ordenado corretamente\n");
+			tempo_medio3 = tempo_medio3 + m3->tempo;
+			comparacoes_medias3 = comparacoes_medias3 + m3->comparacoes;
+			trocas_medias3 = trocas_medias3 + m3->trocas;
+			printf("Quantidade de trocas %.2lf\n", m3->trocas);
+			printf("Tempo gasto %lf\n", m3->tempo);
+			printf("Quantidade de comparacoes %.2lf\n", m3->comparacoes);
 		}
-		if(metodo == 4)
+		else
+			printf("ERRO: Vetor nao ordenado\n");	
+
+		/*===========================Ordenacao por Quicksort Turbinado=============================*/
+		printf("\n====== Ordenando com quicksort turbinado ======\n");
+		QuicksortTurbinado(copia4,tam,m4);
+		if(ordenadoCorretamente(copia4, tam))
 		{
-			printf("Ordenando com quicksort turbinado\n");
+			printf ("Vetor ordenado corretamente\n");
+			tempo_medio4 = tempo_medio4 + m4->tempo;
+			comparacoes_medias4 = comparacoes_medias4 + m4->comparacoes;
+			trocas_medias4 = trocas_medias4 + m4->trocas;
+			printf("Quantidade de trocas %.2lf\n", m4->trocas);
+			printf("Tempo gasto %lf\n", m4->tempo);
+			printf("Quantidade de comparacoes %.2lf\n", m4->comparacoes);
 		}
-		printf("Tempo medio gasto na ordenacao considerando %d execucoes: %f segundos \n", execucoes, tempo_medio);
-		printf("Medias da comparacoes na ordenacao considerando %d execucoes: %f comparacoes \n", execucoes, comparacoes_medias);
-		printf("Medias das trocas na ordenacao considerando %d execucoes: %f trocas \n", execucoes, trocas_medias);
-		printf("=======================================================================\n");
+		else
+			printf("ERRO: Vetor nao ordenado\n");
+
+		printf("FIM DA EXECUCAO %d\n", exec);
+		printf ("\n\n");
 	}
-	/*Desaloca os vetores*/
-	free(vetor);
-	free(copia);
-	free (m);
-	
+
+	/*Calculando a media*/
+	tempo_medio1 = tempo_medio1 / 3.0;
+	comparacoes_medias1 = comparacoes_medias1 / 3.0;
+	trocas_medias1 = trocas_medias1 / 3.0;
+
+	tempo_medio2 = tempo_medio2 / 3.0;
+	comparacoes_medias2 = comparacoes_medias2 / 3.0;
+	trocas_medias2 = trocas_medias2 / 3.0;
+
+	tempo_medio3 = tempo_medio3 / 3.0;
+	comparacoes_medias3 = comparacoes_medias3 / 3.0;
+	trocas_medias3 = trocas_medias3 / 3.0;
+
+	tempo_medio4 = tempo_medio4 / 3.0;
+	comparacoes_medias4 = comparacoes_medias4 / 3.0;
+	trocas_medias4 = trocas_medias4 / 3.0;
+
+	/*Mostra os resultados*/
+	printf("=======================================================================\n");
+	printf("ORDENADO USANDO BOLHA\n");
+	printf("Tempo medio gasto na ordenacao considerando %d execucoes: %f segundos \n", 3, tempo_medio1);
+	printf("Medias da comparacoes na ordenacao considerando %d execucoes: %f comparacoes \n", 3, comparacoes_medias1);
+	printf("Medias das trocas na ordenacao considerando %d execucoes: %f trocas \n", 3, trocas_medias1);
+	printf("=======================================================================\n");
+	printf("\n\n");
+	printf("=======================================================================\n");
+	printf("ORDENADO USANDO INSERCAO\n");
+	printf("Tempo medio gasto na ordenacao considerando %d execucoes: %f segundos \n", 3, tempo_medio2);
+	printf("Medias da comparacoes na ordenacao considerando %d execucoes: %f comparacoes \n", 3, comparacoes_medias2);
+	printf("Medias das trocas na ordenacao considerando %d execucoes: %f trocas \n", 3, trocas_medias2);
+	printf("=======================================================================\n");
+	printf("\n\n");
+	printf("=======================================================================\n");
+	printf("ORDENADO USANDO QUICKSORT\n");
+	printf("Tempo medio gasto na ordenacao considerando %d execucoes: %f segundos \n", 3, tempo_medio3);
+	printf("Medias da comparacoes na ordenacao considerando %d execucoes: %f comparacoes \n", 3, comparacoes_medias3);
+	printf("Medias das trocas na ordenacao considerando %d execucoes: %f trocas \n", 3, trocas_medias3);
+	printf("=======================================================================\n");
+	printf("\n\n");
+	printf("=======================================================================\n");
+	printf("ORDENADO USANDO QUICKSORT TURBINADO\n");
+	printf("Tempo medio gasto na ordenacao considerando %d execucoes: %f segundos \n", 3, tempo_medio4);
+	printf("Medias da comparacoes na ordenacao considerando %d execucoes: %f comparacoes \n", 3, comparacoes_medias4);
+	printf("Medias das trocas na ordenacao considerando %d execucoes: %f trocas \n", 3, trocas_medias4);
+	printf("=======================================================================\n");
+
+	/*Desaloca as estruturas e vetores*/
+	if(m1)
+		free(m1);
+	if(m2)
+		free(m2);
+	if(m3)
+		free(m3);
+	if(m4)
+		free(m4);
+	if(vetor)
+		free(vetor);
+	if(copia1)
+		free(copia1);
+	if(copia2)
+		free(copia2);
+	if(copia3)
+		free(copia3);
+	if(copia4)
+		free(copia4);
+
 	return 0;
 }
 
@@ -179,7 +260,7 @@ void preencheVetor (unsigned long int *v, int t)
 {	
 	int i;
 	
-	//srand(time(NULL));
+	srand(time(NULL));
 	
 	for(i = 0; i < t; i++)
 	{
@@ -209,7 +290,7 @@ void copiaVetor (unsigned long int *c, unsigned long int *v, int t)
 int ordenadoCorretamente (unsigned long int *v, int t)
 {
 	int i;
-	for(i = 0; i < t-1; i++) //vefifica se o vetor foi ordenado corretamente
+	for(i = 0; i < t-1; i++) /*vefifica se o vetor foi ordenado corretamente*/
 	{
 		if (v[i] > v[i+1])
 			return 0;
@@ -363,12 +444,33 @@ void ordenacaoQuicksort(unsigned long int *v, int esq, int dir, long int *comp, 
 }
 
 /*======================================================================================*/
+/* QUICKSORT                                                                            */
+/* IN = VETOR, TAM, MEDIDAS                                                             */
+/* OUT = VOID                                                                           */
+/*======================================================================================*/
+void Quicksort(unsigned long int *v, int tam, medidas m)
+{
+	long int comp = 0, troca = 0;
+	double inicio, fim, tempo;
+
+	inicio = (double)clock()/CLOCKS_PER_SEC;
+	ordenacaoQuicksort(v,0,tam-1,&comp,&troca);
+	fim = (double)clock()/CLOCKS_PER_SEC;
+
+	tempo = fim - inicio;
+	m->tempo = tempo;
+	m->comparacoes = comp;
+	m->trocas = troca;
+}
+
+/*======================================================================================*/
 /* PEGA PIVO MEDIANA                                                                    */
 /* IN = ESQ, DIR                                                                        */
 /* OUT = INDICE                                                                         */
 /*======================================================================================*/
 int pegaMediana(int esq, int dir)
 {
+	srand(time(NULL));
 	int i, j, pivo;
 	unsigned long int aux;
 
@@ -403,7 +505,7 @@ void ordenacaoQuicksortTurbinado(unsigned long int *v, int esq, int dir, long in
 {
 	int i, j;
 
-	if((esq+dir) <= 40)
+	if((dir-esq) <= 40)
 	{
 		insercaoTurbinado(v,esq,dir,*&troca,&*comp);
 	}
@@ -411,10 +513,30 @@ void ordenacaoQuicksortTurbinado(unsigned long int *v, int esq, int dir, long in
 	{
 		Particao(v,esq,dir,&i,&j,*&troca,*&comp);
 		if(esq < j)
-			ordenacaoQuicksort(v,esq,j,*&troca,*&comp);
+			ordenacaoQuicksortTurbinado(v,esq,j,*&troca,*&comp);
 		if(i < dir)
-			ordenacaoQuicksort(v,i,dir,*&troca,*&comp);
+			ordenacaoQuicksortTurbinado(v,i,dir,*&troca,*&comp);
 	}
+}
+
+/*======================================================================================*/
+/* QUICKSORT TURBINADO                                                                  */
+/* IN = VETOR, TAM, MEDIDAS                                                             */
+/* OUT = VOID                                                                           */
+/*======================================================================================*/
+void QuicksortTurbinado(unsigned long int *v, int tam, medidas m)
+{
+	long int comp = 0, troca = 0;
+	double inicio, fim, tempo;
+
+	inicio = (double)clock()/CLOCKS_PER_SEC;
+	ordenacaoQuicksortTurbinado(v,0,tam-1,&comp,&troca);
+	fim = (double)clock()/CLOCKS_PER_SEC;
+
+	tempo = fim - inicio;
+	m->tempo = tempo;
+	m->comparacoes = comp;
+	m->trocas = troca;
 }
 
 /*======================================================================================*/
@@ -427,7 +549,7 @@ void insercaoTurbinado(unsigned long int *v, int inicio, int fim, long int *troc
 	int i, j;
 	long int troca = *trocas, comp = *comps;
 
-	for(i = inicio+1; i < fim; i++)
+	for(i = inicio+1; i <= fim; i++)
 	{
 		j = i;
 		while(j > 0 && realizaVerificacao(v[j-1],v[j],&comp))
